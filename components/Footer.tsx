@@ -81,6 +81,9 @@ export default function Footer() {
             <p className="text-[11px] font-light text-brand-muted opacity-40 mt-10">
                 © 2025 Chatkara Kitchen. All rights reserved.
             </p>
+            <p className="text-[11px] font-light text-brand-muted opacity-40 mt-2 text-2xl font-bold">
+                Designed and developed by <a href="https://www.meetshubham.site" target="_blank" className="hover:text-accent transition-colors duration-300">: Shubham Kumar Mishra</a>
+            </p>
         </footer>
     )
 }
