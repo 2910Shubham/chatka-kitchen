@@ -9,7 +9,7 @@ interface SignatureDishProps {
 }
 
 export default function SignatureDish({ dish }: SignatureDishProps) {
-    useGSAP((gsap, _ScrollTrigger) => {
+    useGSAP((gsap) => {
         gsap.from('.sig-image img', {
             scrollTrigger: {
                 trigger: '.sig-image',

@@ -43,24 +43,26 @@ export default function Menu({ items, categories }: MenuProps) {
 
     /* Initial scroll-triggered reveal */
     useEffect(() => {
-        if (!menuContainerRef.current || hasRevealedRef.current) return
+        const container = menuContainerRef.current
+        if (!container || hasRevealedRef.current) return
 
-        const cards = menuContainerRef.current.querySelectorAll('.menu-card')
+        const cards = container.querySelectorAll('.menu-card')
         if (cards.length === 0) return
 
-        gsap.set(cards, { opacity: 0, x: -14 })
+        gsap.set(cards, { opacity: 0, y: 30, scale: 0.95 })
 
         ScrollTrigger.create({
-            trigger: menuContainerRef.current,
+            trigger: container,
             start: 'top 82%',
             once: true,
             onEnter: () => {
                 hasRevealedRef.current = true
                 gsap.to(cards, {
                     opacity: 1,
-                    x: 0,
-                    duration: 0.7,
-                    stagger: 0.06,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.8,
+                    stagger: 0.08,
                     ease: 'power2.out',
                 })
             },
@@ -68,7 +70,7 @@ export default function Menu({ items, categories }: MenuProps) {
 
         return () => {
             ScrollTrigger.getAll().forEach((st) => {
-                if (st.trigger === menuContainerRef.current) {
+                if (st.trigger === container) {
                     st.kill()
                 }
             })
@@ -88,7 +90,8 @@ export default function Menu({ items, categories }: MenuProps) {
 
         gsap.from(cards, {
             opacity: 0,
-            x: -14,
+            y: 30,
+            scale: 0.95,
             duration: 0.7,
             stagger: 0.06,
             ease: 'power2.out',
@@ -98,22 +101,25 @@ export default function Menu({ items, categories }: MenuProps) {
     return (
         <section id="menu" className="bg-bg-primary py-[88px]">
             {/* Header */}
-            <div className="px-6">
+            <div className="px-6 text-center">
                 <span className="text-[10px] font-body font-medium tracking-[4px] uppercase text-accent block">
-                    Our Menu
+                    About Our Food
                 </span>
-                <h2 className="font-display font-light text-[40px] leading-[1.05] text-brand-primary mt-2">
-                    <em>Crafted</em> with intention.
+                <h2 className="font-display font-light text-[40px] md:text-[52px] leading-[1.05] text-brand-primary mt-3">
+                    <em>Delicious</em> dishes, crafted with love
                 </h2>
+                <p className="text-[13px] font-light text-brand-muted leading-[1.8] mt-3 max-w-md mx-auto">
+                    Every dish on our menu is prepared with the freshest ingredients and authentic spices
+                </p>
             </div>
 
             {/* Category pills */}
-            <div className="flex gap-2 overflow-x-auto px-6 pb-5 mt-6 scrollbar-hide">
+            <div className="flex gap-2 justify-center flex-wrap px-6 pb-5 mt-8">
                 {categories.map((cat) => (
                     <button
                         key={cat.id}
                         onClick={() => setActiveCategory(cat.slug)}
-                        className={`border text-[10px] font-medium tracking-[2px] uppercase px-[18px] py-2 rounded-[2px] whitespace-nowrap transition-colors duration-200 flex-shrink-0 ${activeCategory === cat.slug
+                        className={`border text-[10px] font-medium tracking-[2px] uppercase px-5 py-[10px] rounded-[2px] whitespace-nowrap transition-all duration-300 ${activeCategory === cat.slug
                             ? 'bg-accent text-brand-inverse border-accent'
                             : 'border-border text-brand-muted hover:border-accent hover:text-accent'
                             }`}
@@ -124,56 +130,57 @@ export default function Menu({ items, categories }: MenuProps) {
             </div>
 
             {/* Divider */}
-            <div className="h-px bg-divider mx-6 mb-0" />
+            <div className="h-px bg-divider mx-6 mb-8" />
 
-            {/* Menu items */}
+            {/* Menu items — showcase grid */}
             <div ref={menuContainerRef}>
                 {Object.entries(grouped).map(([category, categoryItems]) => (
-                    <div key={category}>
-                        <h3 className="font-display italic font-light text-[28px] text-brand-primary border-l-2 border-accent pl-[14px] my-10 mx-6">
+                    <div key={category} className="mb-12">
+                        <h3 className="font-display italic font-light text-[28px] text-brand-primary border-l-2 border-accent pl-[14px] mx-6 mb-8">
                             {categoryLabels[category] || category}
                         </h3>
 
-                        {categoryItems.map((item) => (
-                            <div
-                                key={item.id}
-                                className="menu-card px-6 py-[18px] border-b border-divider flex items-center gap-[14px]"
-                            >
-                                {/* Image */}
-                                <div className="w-[76px] h-[76px] flex-shrink-0 relative overflow-hidden rounded-[2px]">
-                                    <Image
-                                        src={item.imageUrl}
-                                        fill
-                                        alt={item.name}
-                                        className="object-cover"
-                                        sizes="76px"
-                                    />
-                                </div>
-
-                                {/* Text */}
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center gap-2">
-                                        {item.isVeg && (
-                                            <div className="w-2 h-2 border border-green-600 bg-green-600 flex-shrink-0" />
-                                        )}
-                                        {!item.isVeg && (
-                                            <div className="w-2 h-2 border border-red-600 bg-red-600 flex-shrink-0" />
-                                        )}
-                                        <span className="text-[14px] font-normal text-brand-primary">
-                                            {item.name}
-                                        </span>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 px-6">
+                            {categoryItems.map((item) => (
+                                <div
+                                    key={item.id}
+                                    className="menu-card group flex flex-col items-center text-center"
+                                >
+                                    {/* Circular image */}
+                                    <div className="relative w-[140px] h-[140px] md:w-[170px] md:h-[170px] rounded-full overflow-hidden border-2 border-accent/20 group-hover:border-accent/50 transition-all duration-500">
+                                        <Image
+                                            src={item.imageUrl}
+                                            fill
+                                            alt={item.name}
+                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                            sizes="(max-width: 768px) 140px, 170px"
+                                        />
                                     </div>
-                                    <p className="text-[12px] font-light text-brand-muted leading-[1.6] mt-1 line-clamp-2">
+
+                                    {/* Veg/Non-veg indicator + Name */}
+                                    <div className="mt-4 flex items-center justify-center gap-1.5">
+                                        <div className={`w-2 h-2 border flex-shrink-0 ${item.isVeg
+                                            ? 'border-green-600 bg-green-600'
+                                            : 'border-red-600 bg-red-600'
+                                            }`}
+                                        />
+                                        <h4 className="text-[13px] font-medium tracking-[1px] uppercase text-brand-primary">
+                                            {item.name}
+                                        </h4>
+                                    </div>
+
+                                    {/* Description */}
+                                    <p className="text-[11px] font-light text-brand-muted leading-[1.6] mt-2 line-clamp-2 px-1 max-w-[200px]">
                                         {item.description}
                                     </p>
-                                </div>
 
-                                {/* Price */}
-                                <span className="text-[14px] font-medium text-accent flex-shrink-0 self-start pt-1">
-                                    ₹{item.price}
-                                </span>
-                            </div>
-                        ))}
+                                    {/* Price */}
+                                    <span className="text-[14px] font-medium text-accent mt-2">
+                                        ₹{item.price}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 ))}
             </div>
