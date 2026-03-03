@@ -261,7 +261,7 @@ COMPONENT: components/Header.tsx
   Scrolled (>80px): bg-bg-primary border-b border-divider py-3
 - LEFT: Restaurant name "Chatkara Kitchen" — font-display text-[20px] font-medium tracking-[3px]
   Style the "Z" in text-accent
-- RIGHT: <a href="tel:+919876543210"> button
+- RIGHT: <a href="tel:+919508351404"> button
   bg-accent text-text-inverse text-[10px] font-medium tracking-[2px] uppercase
   px-[18px] py-[9px] rounded-[2px]
   Text: "CALL NOW"
@@ -306,7 +306,7 @@ CONTENT LAYER:
   GSAP: opacity 0→1, duration 0.6s, delay 1s
 
   Button 1 — CALL NOW:
-    <a href="tel:+919876543210">
+    <a href="tel:+919508351404">
     col-span-1, h-[50px], bg-accent, text-text-inverse
     text-[11px] font-medium tracking-[2px] uppercase rounded-[2px]
     flex items-center justify-center gap-2
@@ -320,7 +320,7 @@ CONTENT LAYER:
     Text: "View Menu"
 
   Button 3 — WHATSAPP:
-    <a href="https://wa.me/919876543210">
+    <a href="https://wa.me/919508351404">
     col-span-2, h-[46px], bg-accent-wa, text-accent-waFg
     same font spec
     Text: "💬 Order on WhatsApp"

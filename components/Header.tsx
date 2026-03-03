@@ -42,7 +42,7 @@ export default function Header() {
             </a>
 
             <a
-                href="tel:+919876543210"
+                href="tel:+919508351404"
                 aria-label="Call Chatkara Kitchen"
                 className="bg-accent text-brand-inverse text-[10px] font-medium tracking-[2px] uppercase px-[18px] py-[9px] rounded-[2px] transition-opacity duration-300 hover:opacity-85"
             >

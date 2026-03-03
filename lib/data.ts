@@ -12,8 +12,8 @@ export const restaurantInfo: RestaurantInfo = {
     established: '2019',
     rating: '4.8',
     covers: '120+',
-    phone: '+919876543210',
-    whatsapp: '919876543210',
+    phone: '+919508351404',
+    whatsapp: '919508351404',
     address: 'Patna - Gaya Rd, near Bairiya Bus Stand, Bairiya, Pahari, Patna, Bihar 800030',
     mapUrl: 'https://maps.app.goo.gl/18pMNHghgU1jJu1JA',
     mapEmbedUrl:
