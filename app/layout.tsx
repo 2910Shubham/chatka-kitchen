@@ -24,7 +24,7 @@ const jost = Jost({
 export const metadata: Metadata = {
   title: 'Chatkara Kitchen — Fine Dining',
   description:
-    'Experience the finest North Indian & Mughlai cuisine at Chatkara Kitchen. Crafted with care, served with love. Fine dining in the heart of New Delhi.',
+    'Experience the finest North Indian & Mughlai cuisine at Chatkara Kitchen. Crafted with care, served with love. Fine dining in the heart of Patna.',
   keywords: [
     'Chatkara Kitchen',
     'fine dining',
