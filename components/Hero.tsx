@@ -1,11 +1,25 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { useGSAP } from '@/hooks/useGSAP'
 
+const CAROUSEL_IMAGES = [
+    '/images/hero-carousel/dish-1.png',
+    '/images/hero-carousel/dish-2.png',
+    '/images/hero-carousel/dish-3.png',
+    '/images/hero-carousel/dish-4.png',
+    '/images/hero-carousel/dish-5.png',
+]
+
 export default function Hero() {
     const imgWrapRef = useRef<HTMLDivElement>(null)
+    const [currentImageIndex, setCurrentImageIndex] = useState(0)
+    const [isTransitioning, setIsTransitioning] = useState(false)
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+    const nextImageIndex = (currentImageIndex + 1) % CAROUSEL_IMAGES.length
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -13,6 +27,57 @@ export default function Hero() {
         }, 300)
         return () => clearTimeout(timer)
     }, [])
+
+    const advanceCarousel = () => {
+        setIsTransitioning(true)
+        
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+        
+        timeoutRef.current = setTimeout(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % CAROUSEL_IMAGES.length)
+            setIsTransitioning(false)
+        }, 800)
+    }
+
+    // Auto-play carousel
+    useEffect(() => {
+        if (intervalRef.current) clearInterval(intervalRef.current)
+        
+        intervalRef.current = setInterval(() => {
+            advanceCarousel()
+        }, 5000)
+
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current)
+            if (timeoutRef.current) clearTimeout(timeoutRef.current)
+        }
+    }, [])
+
+    const handlePrevImage = () => {
+        if (isTransitioning) return
+        setIsTransitioning(true)
+        
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+        if (intervalRef.current) clearInterval(intervalRef.current)
+        
+        timeoutRef.current = setTimeout(() => {
+            setCurrentImageIndex((prev) => (prev - 1 + CAROUSEL_IMAGES.length) % CAROUSEL_IMAGES.length)
+            setIsTransitioning(false)
+        }, 800)
+    }
+
+    const handleNextImage = () => {
+        if (isTransitioning) return
+        setIsTransitioning(true)
+        
+        if (timeoutRef.current) clearTimeout(timeoutRef.current)
+        if (intervalRef.current) clearInterval(intervalRef.current)
+        
+        timeoutRef.current = setTimeout(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % CAROUSEL_IMAGES.length)
+            setIsTransitioning(false)
+        }, 800)
+    }
 
     useGSAP((gsap) => {
         const tl = gsap.timeline({ defaults: { ease: 'power2.out' } })
@@ -52,16 +117,103 @@ export default function Hero() {
 
     return (
         <section className="h-[100svh] min-h-[620px] relative overflow-hidden">
-            {/* Image Layer */}
+            {/* Carousel Image Layer */}
             <div ref={imgWrapRef} className="hero-img-wrap absolute inset-0">
-                <Image
-                    src="/images/hero-banner-dark.png"
-                    fill
-                    priority
-                    alt="Chatkara Kitchen fine dining"
-                    className="object-cover object-center"
-                    sizes="100vw"
-                />
+                {/* Current Image */}
+                <div className={`absolute inset-0 transition-opacity duration-800 ${
+                    isTransitioning ? 'opacity-0' : 'opacity-100'
+                }`}>
+                    <Image
+                        src={CAROUSEL_IMAGES[currentImageIndex]}
+                        fill
+                        priority
+                        alt="Chatkara Kitchen restaurant"
+                        className="object-cover object-center"
+                        sizes="100vw"
+                        quality={100}
+                        loading="eager"
+                    />
+                </div>
+
+                {/* Next Image (for smooth transition) */}
+                <div className={`absolute inset-0 transition-opacity duration-800 ${
+                    isTransitioning ? 'opacity-100' : 'opacity-0'
+                }`}>
+                    <Image
+                        src={CAROUSEL_IMAGES[nextImageIndex]}
+                        fill
+                        alt="Chatkara Kitchen restaurant"
+                        className="object-cover object-center"
+                        sizes="100vw"
+                        quality={100}
+                        loading="eager"
+                    />
+                </div>
+
+                {/* Carousel Navigation - Desktop Only */}
+                <div className="hidden lg:flex absolute inset-0 z-[2] pointer-events-none">
+                    <button
+                        onClick={handlePrevImage}
+                        disabled={isTransitioning}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 w-24 h-32 flex items-center justify-start pl-6 group pointer-events-auto transition-colors hover:bg-[rgba(0,0,0,0.1)] disabled:opacity-50"
+                        aria-label="Previous image"
+                    >
+                        <svg
+                            className="w-8 h-8 text-white opacity-40 group-hover:opacity-80 transition-opacity"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        </svg>
+                    </button>
+
+                    <button
+                        onClick={handleNextImage}
+                        disabled={isTransitioning}
+                        className="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-32 flex items-center justify-end pr-6 group pointer-events-auto transition-colors hover:bg-[rgba(0,0,0,0.1)] disabled:opacity-50"
+                        aria-label="Next image"
+                    >
+                        <svg
+                            className="w-8 h-8 text-white opacity-40 group-hover:opacity-80 transition-opacity"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={1.5}
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5L15.75 12l-7.5 7.5" />
+                        </svg>
+                    </button>
+                </div>
+
+                {/* Carousel Indicators - Desktop Only */}
+                <div className="hidden lg:flex absolute bottom-6 left-1/2 -translate-x-1/2 z-[2] gap-2">
+                    {CAROUSEL_IMAGES.map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => {
+                                if (isTransitioning || index === currentImageIndex) return
+                                setIsTransitioning(true)
+                                
+                                if (timeoutRef.current) clearTimeout(timeoutRef.current)
+                                if (intervalRef.current) clearInterval(intervalRef.current)
+                                
+                                timeoutRef.current = setTimeout(() => {
+                                    setCurrentImageIndex(index)
+                                    setIsTransitioning(false)
+                                }, 800)
+                            }}
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                                index === currentImageIndex
+                                    ? 'w-8 bg-accent'
+                                    : 'w-2 bg-white/40 hover:bg-white/60'
+                            }`}
+                            aria-label={`Go to image ${index + 1}`}
+                            aria-current={index === currentImageIndex}
+                        />
+                    ))}
+                </div>
             </div>
 
             {/* Overlay Layer */}
